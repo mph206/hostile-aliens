@@ -16,32 +16,35 @@
 <script>
     // Game objects
     class Game {
-        constructor() {
-            this.isOver = false;
-            this.startingShips = [ new Mothership, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip ]
-            this.shipsLeft = [];
+        constructor(motherShips, defenseShips, attackShips) {
+            this.motherShips = motherShips;
+            this.defenseShips = defenseShips;
+            this.attackShips = attackShips;
+            this.shipsArray = []
         }
 
         setBoard() {
-            this.shipsLeft = [...this.startingShips];
+            for (let i = 0; i < this.motherShips; i++) this.shipsArray.push(new Ship('Mother ship', 100, 9)) 
+            for (let i = 0; i < this.defenseShips; i++) this.shipsArray.push(new Ship('Defense ship', 80, 10)) 
+            for (let i = 0; i < this.attackShips; i++) this.shipsArray.push(new Ship('Attack ship', 45, 12)) 
             this.updateBoard();
         }
 
         checkDestroyedShips() {
-            this.shipsLeft.forEach((item, index) => {
+            this.shipsArray.forEach((item, index) => {
                 if (item.isDestroyed) {
-                    this.shipsLeft.splice(index, 1);
+                    this.shipsArray.splice(index, 1);
                 }
             })
         }
 
         updateBoard() {
             gameArea.innerHTML = '';
-            this.shipsLeft.forEach(item => {gameArea.innerHTML += item.HTML})
+            this.shipsArray.forEach(item => {gameArea.innerHTML += item.HTML})
         }
 
         checkGameOver() {
-            if (this.shipsLeft.length === 0 || this.shipsLeft[0] && this.shipsLeft[0].name !== 'Mother ship') {
+            if (this.shipsArray.length === 0 || this.shipsArray[0] && this.shipsArray[0].name !== 'Mother ship') {
                 gameArea.innerHTML = `<p>You won! Click 'New Game' to play again</p>`
             }
         }
@@ -49,12 +52,12 @@
 
     class Player {
         selectShipIndex() {
-            const shipsRemaining = game.shipsLeft.filter(item => !item.isDestroyed).length;
+            const shipsRemaining = game.shipsArray.filter(item => !item.isDestroyed).length;
             return Math.floor(Math.random() * shipsRemaining);
         }
 
         fire() {
-            game.shipsLeft[this.selectShipIndex()].takeDamage();
+            game.shipsArray[this.selectShipIndex()].takeDamage();
             game.checkDestroyedShips();
             game.updateBoard();
             game.checkGameOver();
@@ -68,10 +71,6 @@
             this.pointsLost = pointsLost;
         }
 
-        get isDestroyed() {
-            return this.hitPoints <= 0;
-        }
-
         get HTML() {
             return `<div style="margin: 30px; border: 1px solid black;">
                     <h2>${this.name}</h2>
@@ -82,44 +81,21 @@
         takeDamage() {
             this.hitPoints = this.hitPoints - this.pointsLost;
         }
-    }
-
-    class Mothership extends Ship {
-        constructor() {
-            super()
-            this.name = 'Mother ship';
-            this.hitPoints = 100;
-            this.pointsLost = 9;
-        }
-    }
-
-    class DefenceShip extends Ship {
-        constructor() {
-            super()
-            this.name = 'Defence ship';
-            this.hitPoints = 80;
-            this.pointsLost = 10;
-        }
-    }
-
-    class AttackShip extends Ship {
-        constructor() {
-            super()
-            this.name = 'Attack ship';
-            this.hitPoints = 45;
-            this.pointsLost = 12;
+        
+        get isDestroyed() {
+            return this.hitPoints <= 0;
         }
     }
 
     // Run game
     const gameArea = document.querySelector('section');
-    let game = new Game;
+    let game = new Game(1, 5, 8);
     const player = new Player();
     game.setBoard();
     const buttons = document.querySelectorAll('button');
 
     buttons[0].addEventListener('click', () => {
-        game = new Game()
+        game = new Game(1, 5, 8)
         game.setBoard();
     })
     buttons[1].addEventListener('click', () => {
