@@ -6,7 +6,7 @@
 </head>
 <body>
     <section style="display: flex; flex-wrap: wrap; justify-content: center"> 
-        <!-- Ships inserted here -->
+        <!-- Game board inserted here -->
     </section>
     <div style="display: flex; justify-content: center">
         <button style="margin:10px">New Game</button>
@@ -14,19 +14,12 @@
     </div>
 </body>
 <script>
-    // Game objects
     class Game {
         constructor(motherShips, defenseShips, attackShips) {
             this.motherShips = motherShips;
             this.defenseShips = defenseShips;
             this.attackShips = attackShips;
             this.shipsArray = []
-            this.buttons = document.querySelectorAll('button');
-            this.startButton = this.buttons[0].addEventListener('click', () => {
-                game = new Game(1, 5, 8);
-                game.startGame();
-            })
-            this.fireButton = this.buttons[1].addEventListener('click', () => { player.fire() })
             this.gameArea = document.querySelector('section');
         }
 
@@ -39,9 +32,7 @@
 
         checkDestroyedShips() {
             this.shipsArray.forEach((item, index) => {
-                if (item.isDestroyed) {
-                    this.shipsArray.splice(index, 1);
-                }
+                item.isDestroyed ? this.shipsArray.splice(index, 1) : null
             })
         }
 
@@ -51,7 +42,7 @@
         }
 
         checkGameOver() {
-            if (this.shipsArray.length === 0 || this.shipsArray[0] && this.shipsArray[0].name !== 'Mother ship') {
+            if (this.shipsArray.length === 0 || this.shipsArray[0].name !== 'Mother ship') {
                 this.gameArea.innerHTML = `<p>You won! Click 'New Game' to play again</p>`
             }
         }
@@ -59,8 +50,7 @@
 
     class Player {
         selectShipIndex() {
-            const shipsRemaining = game.shipsArray.filter(item => !item.isDestroyed).length;
-            return Math.floor(Math.random() * shipsRemaining);
+            return Math.floor(Math.random() * game.shipsArray.length);
         }
 
         fire() {
@@ -79,7 +69,7 @@
         }
 
         get HTML() {
-            return `<div style="margin: 30px; border: 1px solid black;">
+            return `<div style="margin: 30px; border: 1px solid black; text-align: center; padding: 5px;">
                     <h2>${this.name}</h2>
                     <h3>${this.hitPoints}</h3>
                 </div>`
@@ -94,9 +84,14 @@
         }
     }
 
-    // Run game
     let game = new Game(1, 5, 8);
     const player = new Player();
     game.startGame();
+    buttons = document.querySelectorAll('button');
+    const startButton = buttons[0].addEventListener('click', () => {
+        game = new Game(1, 5, 8);
+        game.startGame();
+    })
+    const fireButton = buttons[1].addEventListener('click', () => { player.fire() })
 </script>
 </html>
