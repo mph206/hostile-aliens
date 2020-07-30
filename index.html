@@ -5,7 +5,7 @@
     <title>Hostile Aliens</title>
 </head>
 <body>
-    <section style="display: flex; flex-wrap: wrap;"> 
+    <section style="display: flex; flex-wrap: wrap; justify-content: center"> 
         <!-- Ships inserted here -->
     </section>
     <div style="display: flex; justify-content: center">
@@ -21,9 +21,16 @@
             this.defenseShips = defenseShips;
             this.attackShips = attackShips;
             this.shipsArray = []
+            this.buttons = document.querySelectorAll('button');
+            this.startButton = this.buttons[0].addEventListener('click', () => {
+                game = new Game(1, 5, 8);
+                game.startGame();
+            })
+            this.fireButton = this.buttons[1].addEventListener('click', () => { player.fire() })
+            this.gameArea = document.querySelector('section');
         }
 
-        setBoard() {
+        startGame() {
             for (let i = 0; i < this.motherShips; i++) this.shipsArray.push(new Ship('Mother ship', 100, 9)) 
             for (let i = 0; i < this.defenseShips; i++) this.shipsArray.push(new Ship('Defense ship', 80, 10)) 
             for (let i = 0; i < this.attackShips; i++) this.shipsArray.push(new Ship('Attack ship', 45, 12)) 
@@ -39,13 +46,13 @@
         }
 
         updateBoard() {
-            gameArea.innerHTML = '';
-            this.shipsArray.forEach(item => {gameArea.innerHTML += item.HTML})
+            this.gameArea.innerHTML = '';
+            this.shipsArray.forEach(item => {this.gameArea.innerHTML += item.HTML})
         }
 
         checkGameOver() {
             if (this.shipsArray.length === 0 || this.shipsArray[0] && this.shipsArray[0].name !== 'Mother ship') {
-                gameArea.innerHTML = `<p>You won! Click 'New Game' to play again</p>`
+                this.gameArea.innerHTML = `<p>You won! Click 'New Game' to play again</p>`
             }
         }
     }
@@ -88,18 +95,8 @@
     }
 
     // Run game
-    const gameArea = document.querySelector('section');
     let game = new Game(1, 5, 8);
     const player = new Player();
-    game.setBoard();
-    const buttons = document.querySelectorAll('button');
-
-    buttons[0].addEventListener('click', () => {
-        game = new Game(1, 5, 8)
-        game.setBoard();
-    })
-    buttons[1].addEventListener('click', () => {
-        player.fire();
-    })
+    game.startGame();
 </script>
 </html>
