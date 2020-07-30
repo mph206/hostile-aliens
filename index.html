@@ -17,11 +17,11 @@
         constructor() {
             this.isOver = false;
             this.startingShips = [ new Mothership, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip ]
-            this.shipsLeft = []
+            this.shipsLeft = [];
         }
 
         setBoard() {
-            this.shipsLeft = this.startingShips;
+            this.shipsLeft = [...this.startingShips];
             this.updateBoard();
         }
 
@@ -39,7 +39,7 @@
 
         checkGameOver() {
             if (this.shipsLeft.length === 0 || this.shipsLeft[0] && this.shipsLeft[0].name !== 'Mother ship') {
-                alert('You won!')
+                gameArea.innerHTML = `<p>You won! Click 'New Game' to play again</p>`
             }
         }
     }
@@ -61,11 +61,10 @@
     }
 
     class Ship {
-        constructor(name, hitPoints, pointsLost, imageUrl) {
+        constructor(name, hitPoints, pointsLost) {
             this.name = name;
             this.hitPoints = hitPoints;
             this.pointsLost = pointsLost;
-            this.imageUrl = imageUrl;
         }
 
         get isDestroyed() {
@@ -73,8 +72,8 @@
         }
 
         get HTML() {
-            return `<div>
-                    <img src=${this.imageUrl} alt=${this.name} style="width: 100px; height: 100px;"/>
+            return `<div style="margin: 30px; border: 1px solid black;">
+                    <h2>${this.name}</h2>
                     <h3>${this.hitPoints}</h3>
                 </div>`
         }
@@ -90,7 +89,6 @@
             this.name = 'Mother ship';
             this.hitPoints = 100;
             this.pointsLost = 9;
-            this.imageUrl = "https://plc.s6img.com/society6/img/UC8N-ED1aPe0Ec-cboruO4lW1xs/w_1500/canvas/~artwork/s6-0075/a/30188720_12512041/~~/the-mothership-q84-canvas.jpg";
         }
     }
 
@@ -100,17 +98,15 @@
             this.name = 'Defence ship';
             this.hitPoints = 80;
             this.pointsLost = 10;
-            this.imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/a0/HMS_Glatton.jpg";
         }
     }
 
     class AttackShip extends Ship {
         constructor() {
             super()
-            this.name = 'Defence ship';
+            this.name = 'Attack ship';
             this.hitPoints = 45;
             this.pointsLost = 12;
-            this.imageUrl = "https://defencyclopedia.files.wordpress.com/2016/05/its-caio-duilio-d554-05.jpg?w=2000&h=1200&crop=1";
         }
     }
 
@@ -130,5 +126,3 @@
     })
 </script>
 </html>
-
-<!-- Max 150 lines -->
