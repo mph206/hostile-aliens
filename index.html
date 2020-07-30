@@ -16,27 +16,46 @@
     class Game {
         constructor() {
             this.isOver = false;
-            this.shipCount = [ new Mothership, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip,new AttackShip ]
+            this.startingShips = [ new Mothership, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip ]
+            this.shipsLeft = []
+        }
+
+        setBoard() {
+            this.shipsLeft = this.startingShips;
+            this.updateBoard();
         }
 
         updateBoard() {
-            gameArea.innerHTML = ''
-            this.shipCount.forEach(item => {
-                if (!item.isDestroyed) {
-                gameArea.innerHTML += item.HTML;
+            gameArea.innerHTML = '';
+            this.shipsLeft.forEach((item, index) => {
+                if (item.isDestroyed) {
+                    this.shipsLeft.splice(index, 1);
+                } else {
+                    gameArea.innerHTML += item.HTML;
                 }
             })
+            this.checkGameOver();
+        }
+
+        checkGameOver() {
+            if (this.shipsLeft.length === 0 || this.shipsLeft[0] && this.shipsLeft[0].name !== 'Mother ship') {
+                alert('You won!')
+            }
         }
     }
 
     class Player {
         selectShip() {
-            return Math.floor(Math.random() * game.shipCount.length);
+            let count = 0;
+            game.shipsLeft.forEach(item => {
+                !item.isDestroyed ? count ++ : null;
+            })
+            return Math.floor(Math.random() * count);
         }
 
         fire() {
             const shipIndex = this.selectShip();
-            game.shipCount[shipIndex].takeDamage();
+            game.shipsLeft[shipIndex].takeDamage();
             game.updateBoard();
         }
     }
@@ -99,17 +118,16 @@
     const gameArea = document.querySelector('section');
     let game = new Game;
     const player = new Player();
-    game.updateBoard();
+    game.setBoard();
     const buttons = document.querySelectorAll('button');
 
     buttons[0].addEventListener('click', () => {
         game = new Game()
-        game.updateBoard()
+        game.setBoard();
     })
     buttons[1].addEventListener('click', () => {
         player.fire();
     })
-
 </script>
 </html>
 
