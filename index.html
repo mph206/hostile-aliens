@@ -12,7 +12,7 @@
     <button>Fire</button>
 </body>
 <script>
-    // Build game objects
+    // Game objects
     class Game {
         constructor() {
             this.isOver = false;
@@ -25,14 +25,18 @@
             this.updateBoard();
         }
 
-        updateBoard() {
-            gameArea.innerHTML = '';
+        checkDestroyedShips() {
             this.shipsLeft.forEach((item, index) => {
                 if (item.isDestroyed) {
                     this.shipsLeft.splice(index, 1);
-                } else {
-                    gameArea.innerHTML += item.HTML;
                 }
+            })
+        }
+
+        updateBoard() {
+            gameArea.innerHTML = '';
+            this.shipsLeft.forEach((item, index) => {
+                    gameArea.innerHTML += item.HTML;
             })
             this.checkGameOver();
         }
@@ -56,6 +60,7 @@
         fire() {
             const shipIndex = this.selectShip();
             game.shipsLeft[shipIndex].takeDamage();
+            game.checkDestroyedShips();
             game.updateBoard();
         }
     }
