@@ -8,8 +8,10 @@
     <section style="display: flex; flex-wrap: wrap;"> 
         <!-- Ships inserted here -->
     </section>
-    <button>New Game</button>
-    <button>Fire</button>
+    <div style="display: flex; justify-content: center">
+        <button style="margin:10px">New Game</button>
+        <button style="margin:10px">Fire</button>
+    </div>
 </body>
 <script>
     // Game objects
@@ -35,10 +37,7 @@
 
         updateBoard() {
             gameArea.innerHTML = '';
-            this.shipsLeft.forEach((item, index) => {
-                    gameArea.innerHTML += item.HTML;
-            })
-            this.checkGameOver();
+            this.shipsLeft.forEach(item => {gameArea.innerHTML += item.HTML})
         }
 
         checkGameOver() {
@@ -49,19 +48,16 @@
     }
 
     class Player {
-        selectShip() {
-            let count = 0;
-            game.shipsLeft.forEach(item => {
-                !item.isDestroyed ? count ++ : null;
-            })
-            return Math.floor(Math.random() * count);
+        selectShipIndex() {
+            const shipsRemaining = game.shipsLeft.filter(item => !item.isDestroyed).length;
+            return Math.floor(Math.random() * shipsRemaining);
         }
 
         fire() {
-            const shipIndex = this.selectShip();
-            game.shipsLeft[shipIndex].takeDamage();
+            game.shipsLeft[this.selectShipIndex()].takeDamage();
             game.checkDestroyedShips();
             game.updateBoard();
+            game.checkGameOver();
         }
     }
 
