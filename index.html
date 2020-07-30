@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostile Aliens</title>
+</head>
+<body>
+    <section style="display: flex; flex-wrap: wrap;"> 
+        <!-- Ships inserted here -->
+    </section>
+    <button>New Game</button>
+    <button>Fire</button>
+</body>
+<script>
+    // Build game objects
+    class Game {
+        constructor() {
+            this.isOver = false;
+            this.shipCount = [ new Mothership, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new DefenceShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip, new AttackShip,new AttackShip ]
+        }
+
+        updateBoard() {
+            gameArea.innerHTML = ''
+            this.shipCount.forEach(item => {
+                gameArea.innerHTML += item.HTML;
+            })
+        }
+    }
+
+    class Player {
+        selectShip() {
+            return Math.floor(Math.random() * game.shipCount.length);
+        }
+
+        fire() {
+            const shipIndex = this.selectShip()
+            game.shipCount[shipIndex].takeDamage();
+            game.updateBoard();
+        }
+    }
+
+    class Ship {
+        constructor(name, hitPoints, pointsLost, imageUrl) {
+            this.name = name;
+            this.hitPoints = hitPoints;
+            this.pointsLost = pointsLost;
+            this.imageUrl = imageUrl;
+            this.isDestroyed = this.hitPoints <= 0;
+        }
+
+        get HTML() {
+            return `<div>
+                    <img src=${this.imageUrl} alt=${this.name} style="width: 100px; height: 100px;"/>
+                    <h3>${this.hitPoints}</h3>
+                </div>`
+        }
+
+        takeDamage() {
+            this.hitPoints = this.hitPoints - this.pointsLost;
+        }
+    }
+
+    class Mothership extends Ship {
+        constructor() {
+            super()
+            this.name = 'Mother ship';
+            this.hitPoints = 100;
+            this.pointsLost = 9;
+            this.imageUrl = "https://plc.s6img.com/society6/img/UC8N-ED1aPe0Ec-cboruO4lW1xs/w_1500/canvas/~artwork/s6-0075/a/30188720_12512041/~~/the-mothership-q84-canvas.jpg";
+        }
+    }
+
+    class DefenceShip extends Ship {
+        constructor() {
+            super()
+            this.name = 'Defence ship';
+            this.hitPoints = 80;
+            this.pointsLost = 10;
+            this.imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/a0/HMS_Glatton.jpg";
+        }
+    }
+
+    class AttackShip extends Ship {
+        constructor() {
+            super()
+            this.name = 'Defence ship';
+            this.hitPoints = 45;
+            this.pointsLost = 12;
+            this.imageUrl = "https://defencyclopedia.files.wordpress.com/2016/05/its-caio-duilio-d554-05.jpg?w=2000&h=1200&crop=1";
+        }
+    }
+
+    // Run game
+    const gameArea = document.querySelector('section');
+    let game = new Game;
+    const player = new Player();
+    game.updateBoard();
+    const buttons = document.querySelectorAll('button');
+
+    buttons[0].addEventListener('click', () => {
+        game = new Game()
+        game.updateBoard()
+    })
+    buttons[1].addEventListener('click', () => {
+        player.fire();
+    })
+
+</script>
+</html>
+
+<!-- Max 150 lines -->
