@@ -22,7 +22,9 @@
         updateBoard() {
             gameArea.innerHTML = ''
             this.shipCount.forEach(item => {
+                if (!item.isDestroyed) {
                 gameArea.innerHTML += item.HTML;
+                }
             })
         }
     }
@@ -33,7 +35,7 @@
         }
 
         fire() {
-            const shipIndex = this.selectShip()
+            const shipIndex = this.selectShip();
             game.shipCount[shipIndex].takeDamage();
             game.updateBoard();
         }
@@ -45,7 +47,10 @@
             this.hitPoints = hitPoints;
             this.pointsLost = pointsLost;
             this.imageUrl = imageUrl;
-            this.isDestroyed = this.hitPoints <= 0;
+        }
+
+        get isDestroyed() {
+            return this.hitPoints <= 0;
         }
 
         get HTML() {
